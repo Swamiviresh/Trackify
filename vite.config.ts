@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/REPOSITORY_NAME/',
+  base: '/Trackify/',
 })
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
