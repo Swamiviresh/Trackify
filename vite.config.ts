@@ -5,4 +5,3 @@ export default defineConfig({
   base: '/Trackify/',
   plugins: [react()],
 })
-
