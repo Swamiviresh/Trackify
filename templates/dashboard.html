@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <header class="dashboard-header">
+        <div class="welcome-section">
+            <h1 class="page-title">Welcome back, <span class="highlight">{{ username }}</span>! 👋</h1>
+            <p class="page-subtitle">Here's your financial overview</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('add_transaction') }}" class="btn btn-primary">
+                <span class="btn-icon">+</span>
+                Add Transaction
+            </a>
+        </div>
+    </header>
+    
+    <div class="stats-grid">
+        <div class="stat-card balance-card">
+            <div class="stat-icon">💎</div>
+            <div class="stat-content">
+                <span class="stat-label">Total Balance</span>
+                <span class="stat-value" data-count="{{ balance }}">$0</span>
+            </div>
+            <div class="stat-glow"></div>
+        </div>
+        
+        <div class="stat-card income-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-content">
+                <span class="stat-label">Total Income</span>
+                <span class="stat-value" data-count="{{ income }}">$0</span>
+            </div>
+            <div class="stat-glow"></div>
+        </div>
+        
+        <div class="stat-card expense-card">
+            <div class="stat-icon">📉</div>
+            <div class="stat-content">
+                <span class="stat-label">Total Expenses</span>
+                <span class="stat-value" data-count="{{ expenses }}">$0</span>
+            </div>
+            <div class="stat-glow"></div>
+        </div>
+        
+        <div class="stat-card savings-card">
+            <div class="stat-icon">🏦</div>
+            <div class="stat-content">
+                <span class="stat-label">Savings (20%)</span>
+                <span class="stat-value" data-count="{{ savings }}">$0</span>
+            </div>
+            <div class="stat-glow"></div>
+        </div>
+    </div>
+    
+    <section class="recent-section">
+        <div class="section-header">
+            <h2 class="section-title">Recent Transactions</h2>
+            <a href="{{ url_for('history') }}" class="view-all-link">View All →</a>
+        </div>
+        
+        <div class="transactions-list">
+            {% if recent %}
+                {% for trans in recent %}
+                <div class="transaction-item {{ trans.type }}" style="animation-delay: {{ loop.index * 0.1 }}s">
+                    <div class="trans-icon">
+                        {% if trans.type == 'income' %}💵{% else %}💸{% endif %}
+                    </div>
+                    <div class="trans-details">
+                        <span class="trans-category">{{ trans.category }}</span>
+                        <span class="trans-desc">{{ trans.description or 'No description' }}</span>
+                    </div>
+                    <div class="trans-amount {{ trans.type }}">
+                        {% if trans.type == 'income' %}+{% else %}-{% endif %}${{ "%.2f"|format(trans.amount) }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <span class="empty-icon">📝</span>
+                    <p>No transactions yet. Start by adding one!</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

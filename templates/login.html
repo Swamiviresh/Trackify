@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trackify - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+    <div class="auth-background">
+        <div class="gradient-sphere sphere-1"></div>
+        <div class="gradient-sphere sphere-2"></div>
+        <div class="gradient-sphere sphere-3"></div>
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+        </div>
+    </div>
+    
+    <div class="auth-container">
+        <div class="auth-left">
+            <div class="brand-section">
+                <div class="logo-large">💰</div>
+                <h1 class="brand-title">Trackify</h1>
+                <p class="brand-tagline">Smart expense tracking for students & young professionals</p>
+                <div class="features-list">
+                    <div class="feature-item">
+                        <span class="feature-icon">📊</span>
+                        <span>Real-time analytics</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">💳</span>
+                        <span>Track all expenses</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🎯</span>
+                        <span>Set savings goals</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="auth-right">
+            <div class="auth-card">
+                <div class="auth-tabs">
+                    <button class="auth-tab {% if not register %}active{% endif %}" data-tab="login">Login</button>
+                    <button class="auth-tab {% if register %}active{% endif %}" data-tab="register">Register</button>
+                    <div class="tab-indicator"></div>
+                </div>
+                
+                <form class="auth-form {% if not register %}active{% endif %}" id="login-form" action="{{ url_for('login') }}" method="POST">
+                    <h2 class="form-title">Welcome Back!</h2>
+                    <p class="form-subtitle">Enter your credentials to continue</p>
+                    
+                    <div class="input-group">
+                        <input type="email" name="email" id="login-email" required>
+                        <label for="login-email">Email Address</label>
+                        <span class="input-icon">📧</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="password" name="password" id="login-password" required>
+                        <label for="login-password">Password</label>
+                        <span class="input-icon">🔒</span>
+                    </div>
+                    
+                    <button type="submit" class="auth-button">
+                        <span>Login</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </form>
+                
+                <form class="auth-form {% if register %}active{% endif %}" id="register-form" action="{{ url_for('register') }}" method="POST">
+                    <h2 class="form-title">Create Account</h2>
+                    <p class="form-subtitle">Start your financial journey today</p>
+                    
+                    <div class="input-group">
+                        <input type="text" name="username" id="reg-username" required>
+                        <label for="reg-username">Username</label>
+                        <span class="input-icon">👤</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="email" name="email" id="reg-email" required>
+                        <label for="reg-email">Email Address</label>
+                        <span class="input-icon">📧</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="password" name="password" id="reg-password" required>
+                        <label for="reg-password">Password</label>
+                        <span class="input-icon">🔒</span>
+                    </div>
+                    
+                    <button type="submit" class="auth-button">
+                        <span>Create Account</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </form>
+                
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

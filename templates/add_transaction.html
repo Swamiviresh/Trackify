@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}Add Transaction{% endblock %}
+
+{% block content %}
+<div class="add-transaction-page">
+    <header class="page-header">
+        <h1 class="page-title">Add New Transaction 💳</h1>
+        <p class="page-subtitle">Record your income or expense</p>
+    </header>
+    
+    <div class="form-container">
+        <form class="transaction-form" action="{{ url_for('add_transaction') }}" method="POST" id="transactionForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="amount">Amount ($)</label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">$</span>
+                        <input type="number" name="amount" id="amount" step="0.01" min="0.01" required placeholder="0.00">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" name="date" id="date" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Transaction Type</label>
+                <div class="type-selector">
+                    <input type="radio" name="type" id="income" value="income" required>
+                    <label for="income" class="type-option income-option">
+                        <span class="type-icon">📈</span>
+                        <span class="type-text">Income</span>
+                    </label>
+                    
+                    <input type="radio" name="type" id="expense" value="expense">
+                    <label for="expense" class="type-option expense-option">
+                        <span class="type-icon">📉</span>
+                        <span class="type-text">Expense</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="category">Category</label>
+                <div class="category-grid" id="categoryGrid">
+                    <!-- Categories will be populated by JS based on type -->
+                </div>
+                <input type="hidden" name="category" id="selectedCategory" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description (Optional)</label>
+                <textarea name="description" id="description" rows="3" placeholder="Add a note about this transaction..."></textarea>
+            </div>
+            
+            <button type="submit" class="submit-btn">
+                <span class="btn-text">Add Transaction</span>
+                <span class="btn-icon">✓</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="success-modal" id="successModal">
+    <div class="success-content">
+        <div class="success-icon">✓</div>
+        <h3>Transaction Added!</h3>
+        <p>Your transaction has been recorded successfully.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const incomeCategories = [
+    { name: 'Salary', icon: '💼' },
+    { name: 'Freelance', icon: '💻' },
+    { name: 'Investment', icon: '📈' },
+    { name: 'Gift', icon: '🎁' },
+    { name: 'Other', icon: '💰' }
+];
+
+const expenseCategories = [
+    { name: 'Food', icon: '🍔' },
+    { name: 'Transport', icon: '🚗' },
+    { name: 'Shopping', icon: '🛍️' },
+    { name: 'Entertainment', icon: '🎬' },
+    { name: 'Bills', icon: '📄' },
+    { name: 'Rent', icon: '🏠' },
+    { name: 'Health', icon: '💊' },
+    { name: 'Education', icon: '📚' },
+    { name: 'Other', icon: '💸' }
+];
+
+const categoryGrid = document.getElementById('categoryGrid');
+const selectedCategoryInput = document.getElementById('selectedCategory');
+const typeInputs = document.querySelectorAll('input[name="type"]');
+
+function renderCategories(categories) {
+    categoryGrid.innerHTML = '';
+    categories.forEach((cat, index) => {
+        const div = document.createElement('div');
+        div.className = 'category-item';
+        div.style.animationDelay = `${index * 0.05}s`;
+        div.innerHTML = `
+            <span class="cat-icon">${cat.icon}</span>
+            <span class="cat-name">${cat.name}</span>
+        `;
+        div.addEventListener('click', () => selectCategory(cat.name, div));
+        categoryGrid.appendChild(div);
+    });
+}
+
+function selectCategory(name, element) {
+    document.querySelectorAll('.category-item').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+    selectedCategoryInput.value = name;
+}
+
+typeInputs.forEach(input => {
+    input.addEventListener('change', (e) => {
+        if (e.target.value === 'income') {
+            renderCategories(incomeCategories);
+        } else {
+            renderCategories(expenseCategories);
+        }
+        selectedCategoryInput.value = '';
+    });
+});
+
+// Set default date to today
+document.getElementById('date').valueAsDate = new Date();
+
+// Render expense categories by default
+renderCategories(expenseCategories);
+</script>
+{% endblock %}

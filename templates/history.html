@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Transaction History{% endblock %}
+
+{% block content %}
+<div class="history-page">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Transaction History 📜</h1>
+            <p class="page-subtitle">View and manage all your transactions</p>
+        </div>
+    </header>
+    
+    <div class="filter-bar">
+        <a href="{{ url_for('history') }}" class="filter-btn {% if filter == 'all' %}active{% endif %}">All</a>
+        <a href="{{ url_for('history', filter='income') }}" class="filter-btn {% if filter == 'income' %}active{% endif %}">Income</a>
+        <a href="{{ url_for('history', filter='expense') }}" class="filter-btn {% if filter == 'expense' %}active{% endif %}">Expenses</a>
+    </div>
+    
+    <div class="transactions-container">
+        {% if transactions %}
+            {% for trans in transactions %}
+            <div class="history-item {{ trans.type }}" data-id="{{ trans.id }}" style="animation-delay: {{ loop.index * 0.05 }}s">
+                <div class="item-left">
+                    <div class="item-icon">
+                        {% if trans.type == 'income' %}💵{% else %}💸{% endif %}
+                    </div>
+                    <div class="item-info">
+                        <span class="item-category">{{ trans.category }}</span>
+                        <span class="item-desc">{{ trans.description or 'No description' }}</span>
+                        <span class="item-date">{{ trans.date }}</span>
+                    </div>
+                </div>
+                <div class="item-right">
+                    <span class="item-amount {{ trans.type }}">
+                        {% if trans.type == 'income' %}+{% else %}-{% endif %}${{ "%.2f"|format(trans.amount) }}
+                    </span>
+                    <button class="delete-btn" onclick="deleteTransaction({{ trans.id }})">🗑️</button>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <span class="empty-icon">📭</span>
+                <h3>No transactions found</h3>
+                <p>{% if filter != 'all' %}Try changing the filter or {% endif %}add a new transaction to get started.</p>
+                <a href="{{ url_for('add_transaction') }}" class="btn btn-primary">Add Transaction</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function deleteTransaction(id) {
+    if (!confirm('Are you sure you want to delete this transaction?')) return;
+    
+    try {
+        const response = await fetch(`/api/delete-transaction/${id}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            const item = document.querySelector(`[data-id="${id}"]`);
+            item.classList.add('deleting');
+            setTimeout(() => item.remove(), 300);
+        }
+    } catch (error) {
+        alert('Failed to delete transaction');
+    }
+}
+</script>
+{% endblock %}

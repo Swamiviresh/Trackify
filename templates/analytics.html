@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}Analytics{% endblock %}
+
+{% block content %}
+<div class="analytics-page">
+    <header class="page-header">
+        <h1 class="page-title">Analytics & Insights 📊</h1>
+        <p class="page-subtitle">Understand your spending patterns</p>
+    </header>
+    
+    <div class="analytics-grid">
+        <div class="analytics-card">
+            <h3 class="card-title">Expense by Category</h3>
+            <div class="chart-container" id="categoryChart">
+                {% if categories %}
+                    {% for cat in categories %}
+                    <div class="bar-item" style="animation-delay: {{ loop.index * 0.1 }}s">
+                        <div class="bar-label">{{ cat.category }}</div>
+                        <div class="bar-wrapper">
+                            <div class="bar" data-value="{{ cat.total }}" style="--bar-color: hsl({{ loop.index * 45 }}, 70%, 60%)"></div>
+                        </div>
+                        <div class="bar-value">${{ "%.2f"|format(cat.total) }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-chart">
+                        <span>📊</span>
+                        <p>No expense data yet</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="analytics-card">
+            <h3 class="card-title">Monthly Overview</h3>
+            <div class="monthly-chart" id="monthlyChart">
+                {% if monthly %}
+                    {% for month in monthly %}
+                    <div class="month-item" style="animation-delay: {{ loop.index * 0.1 }}s">
+                        <div class="month-label">{{ month.month }}</div>
+                        <div class="month-bars">
+                            <div class="month-bar income" style="height: {{ (month.income / (monthly[0].income + monthly[0].expense + 1)) * 100 }}%">
+                                <span class="bar-tooltip">Income: ${{ "%.2f"|format(month.income) }}</span>
+                            </div>
+                            <div class="month-bar expense" style="height: {{ (month.expense / (monthly[0].income + monthly[0].expense + 1)) * 100 }}%">
+                                <span class="bar-tooltip">Expense: ${{ "%.2f"|format(month.expense) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-chart">
+                        <span>📈</span>
+                        <p>No monthly data yet</p>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="chart-legend">
+                <span class="legend-item"><span class="legend-dot income"></span> Income</span>
+                <span class="legend-item"><span class="legend-dot expense"></span> Expense</span>
+            </div>
+        </div>
+        
+        <div class="analytics-card tips-card">
+            <h3 class="card-title">💡 Smart Tips</h3>
+            <div class="tips-list">
+                <div class="tip-item">
+                    <span class="tip-icon">🎯</span>
+                    <p>Try to save at least 20% of your income each month</p>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">📱</span>
+                    <p>Track every small expense - they add up quickly!</p>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">🍽️</span>
+                    <p>Cooking at home can save you up to 50% on food expenses</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Animate bars
+    const bars = document.querySelectorAll('.bar');
+    let maxValue = 0;
+    
+    bars.forEach(bar => {
+        const value = parseFloat(bar.dataset.value);
+        if (value > maxValue) maxValue = value;
+    });
+    
+    bars.forEach(bar => {
+        const value = parseFloat(bar.dataset.value);
+        const percentage = (value / maxValue) * 100;
+        setTimeout(() => {
+            bar.style.width = percentage + '%';
+        }, 100);
+    });
+});
+</script>
+{% endblock %}
