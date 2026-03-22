@@ -45,3 +45,24 @@ export interface MonthlyData {
   income: number;
   expense: number;
 }
+
+export interface Debt {
+  _id: string;
+  userId: string;
+  friendName: string;
+  amount: number;
+  type: "lent" | "borrowed";
+  status: "pending" | "settled";
+  date: string;
+  notes: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface DebtFormData {
+  friendName: string;
+  amount: number;
+  type: "lent" | "borrowed";
+  date: string;
+  notes: string;
+}

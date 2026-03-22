@@ -30,13 +30,15 @@ export default function DashboardPage() {
       date: string;
     }>
   >([]);
+  const [debtStats, setDebtStats] = useState({ totalLent: 0, totalBorrowed: 0 });
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
     try {
-      const [transRes, budgetRes] = await Promise.all([
+      const [transRes, budgetRes, debtsRes] = await Promise.all([
         fetch("/api/transactions"),
         fetch("/api/budget"),
+        fetch("/api/debts"),
       ]);
 
       if (transRes.ok) {
@@ -63,6 +65,21 @@ export default function DashboardPage() {
       if (budgetRes.ok) {
         const bData = await budgetRes.json();
         setBudgetData(bData);
+      }
+
+      if (debtsRes.ok) {
+        const debtsData = await debtsRes.json();
+        const allDebts = debtsData.debts || [];
+
+        const totalLent = allDebts
+          .filter((d: { type: string; status: string }) => d.type === "lent" && d.status === "pending")
+          .reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+
+        const totalBorrowed = allDebts
+          .filter((d: { type: string; status: string }) => d.type === "borrowed" && d.status === "pending")
+          .reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+
+        setDebtStats({ totalLent, totalBorrowed });
       }
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
@@ -107,7 +124,7 @@ export default function DashboardPage() {
         ) : (
           <>
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
               <div className="card">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-muted text-sm font-medium">Total Balance</p>
@@ -147,6 +164,34 @@ export default function DashboardPage() {
                 </div>
                 <p className="text-3xl font-bold text-danger">
                   {formatCurrency(stats.totalExpenses)}
+                </p>
+              </div>
+
+              <div className="card">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-muted text-sm font-medium">Total Lent</p>
+                  <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+                    <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                </div>
+                <p className="text-3xl font-bold text-accent">
+                  {formatCurrency(debtStats.totalLent)}
+                </p>
+              </div>
+
+              <div className="card">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-muted text-sm font-medium">Total Borrowed</p>
+                  <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
+                    <svg className="w-5 h-5 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                </div>
+                <p className="text-3xl font-bold text-danger">
+                  {formatCurrency(debtStats.totalBorrowed)}
                 </p>
               </div>
             </div>

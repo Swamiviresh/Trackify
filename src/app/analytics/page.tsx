@@ -5,6 +5,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import ExpensePieChart from "@/components/charts/ExpensePieChart";
 import MonthlyLineChart from "@/components/charts/MonthlyLineChart";
 import IncomeExpenseBarChart from "@/components/charts/IncomeExpenseBarChart";
+import LentBorrowedPieChart from "@/components/charts/LentBorrowedPieChart";
 import type { CategoryData, MonthlyData } from "@/types";
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -23,11 +24,31 @@ const CATEGORY_COLORS: Record<string, string> = {
 export default function AnalyticsPage() {
   const [categoryData, setCategoryData] = useState<CategoryData[]>([]);
   const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
+  const [debtTotals, setDebtTotals] = useState({ lent: 0, borrowed: 0 });
   const [loading, setLoading] = useState(true);
 
   const fetchAnalytics = useCallback(async () => {
     try {
-      const res = await fetch("/api/transactions");
+      const [res, debtsRes] = await Promise.all([
+        fetch("/api/transactions"),
+        fetch("/api/debts"),
+      ]);
+
+      if (debtsRes.ok) {
+        const debtsData = await debtsRes.json();
+        const allDebts = debtsData.debts || [];
+
+        const lent = allDebts
+          .filter((d: { type: string; status: string }) => d.type === "lent" && d.status === "pending")
+          .reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+
+        const borrowed = allDebts
+          .filter((d: { type: string; status: string }) => d.type === "borrowed" && d.status === "pending")
+          .reduce((sum: number, d: { amount: number }) => sum + d.amount, 0);
+
+        setDebtTotals({ lent, borrowed });
+      }
+
       if (!res.ok) return;
 
       const data = await res.json();
@@ -129,6 +150,14 @@ export default function AnalyticsPage() {
                 Income vs Expenses
               </h2>
               <IncomeExpenseBarChart data={monthlyData} />
+            </div>
+
+            {/* Lent vs Borrowed Pie Chart */}
+            <div className="card">
+              <h2 className="text-lg font-semibold text-foreground mb-4">
+                Lent vs Borrowed
+              </h2>
+              <LentBorrowedPieChart lent={debtTotals.lent} borrowed={debtTotals.borrowed} />
             </div>
 
             {/* Line Chart - full width */}
