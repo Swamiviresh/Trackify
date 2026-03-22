@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import { motion, ExpandCollapse } from "@/components/motion";
 
 const CATEGORIES = [
   "Food & Dining",
@@ -206,8 +207,8 @@ export default function TransactionsPage() {
         </div>
 
         {/* Add/Edit Form */}
-        {showForm && (
-          <div className="card">
+        <ExpandCollapse isOpen={showForm}>
+          <div className="card mt-6">
             <h2 className="text-lg font-semibold text-foreground mb-4">
               {editingId ? "Edit Transaction" : "Add New Transaction"}
             </h2>
@@ -328,7 +329,7 @@ export default function TransactionsPage() {
               </div>
             </form>
           </div>
-        )}
+        </ExpandCollapse>
 
         {/* Filters */}
         <div className="flex flex-wrap gap-4">
@@ -390,9 +391,12 @@ export default function TransactionsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {transactions.map((transaction) => (
-                    <tr
+                  {transactions.map((transaction, i) => (
+                    <motion.tr
                       key={transaction._id}
+                      initial={{ opacity: 0, x: -15 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: i * 0.04 }}
                       className="border-b border-card-border last:border-0 hover:bg-secondary/30 transition-colors"
                     >
                       <td className="p-4 text-sm">
@@ -449,7 +453,7 @@ export default function TransactionsPage() {
                           </button>
                         </div>
                       </td>
-                    </tr>
+                    </motion.tr>
                   ))}
                 </tbody>
               </table>

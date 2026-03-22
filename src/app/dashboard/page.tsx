@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState, useCallback } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import { motion, AnimatePresence, PageTransition, CountUp, StaggerChildren, StaggerItem } from "@/components/motion";
 
 interface BudgetData {
   budget: number;
@@ -115,7 +116,7 @@ export default function DashboardPage() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="card animate-pulse">
+              <div key={i} className="card shimmer-loader">
                 <div className="h-4 bg-secondary rounded w-1/2 mb-4" />
                 <div className="h-8 bg-secondary rounded w-3/4" />
               </div>
@@ -124,8 +125,8 @@ export default function DashboardPage() {
         ) : (
           <>
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-              <div className="card">
+            <StaggerChildren className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+              <StaggerItem><motion.div whileHover={{ y: -4, boxShadow: "0 12px 40px rgba(0,0,0,0.12)" }} transition={{ duration: 0.2 }} className="card">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-muted text-sm font-medium">Total Balance</p>
                   <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
@@ -135,11 +136,11 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <p className={`text-3xl font-bold ${stats.totalBalance >= 0 ? "text-accent" : "text-danger"}`}>
-                  {formatCurrency(stats.totalBalance)}
+                  <CountUp value={stats.totalBalance} />
                 </p>
-              </div>
+              </motion.div></StaggerItem>
 
-              <div className="card">
+              <StaggerItem><motion.div whileHover={{ y: -4, boxShadow: "0 12px 40px rgba(0,0,0,0.12)" }} transition={{ duration: 0.2 }} className="card">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-muted text-sm font-medium">Total Income</p>
                   <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
@@ -149,11 +150,11 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <p className="text-3xl font-bold text-accent">
-                  {formatCurrency(stats.totalIncome)}
+                  <CountUp value={stats.totalIncome} />
                 </p>
-              </div>
+              </motion.div></StaggerItem>
 
-              <div className="card">
+              <StaggerItem><motion.div whileHover={{ y: -4, boxShadow: "0 12px 40px rgba(0,0,0,0.12)" }} transition={{ duration: 0.2 }} className="card">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-muted text-sm font-medium">Total Expenses</p>
                   <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
@@ -163,11 +164,11 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <p className="text-3xl font-bold text-danger">
-                  {formatCurrency(stats.totalExpenses)}
+                  <CountUp value={stats.totalExpenses} />
                 </p>
-              </div>
+              </motion.div></StaggerItem>
 
-              <div className="card">
+              <StaggerItem><motion.div whileHover={{ y: -4, boxShadow: "0 12px 40px rgba(0,0,0,0.12)" }} transition={{ duration: 0.2 }} className="card">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-muted text-sm font-medium">Total Lent</p>
                   <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
@@ -177,11 +178,11 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <p className="text-3xl font-bold text-accent">
-                  {formatCurrency(debtStats.totalLent)}
+                  <CountUp value={debtStats.totalLent} />
                 </p>
-              </div>
+              </motion.div></StaggerItem>
 
-              <div className="card">
+              <StaggerItem><motion.div whileHover={{ y: -4, boxShadow: "0 12px 40px rgba(0,0,0,0.12)" }} transition={{ duration: 0.2 }} className="card">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-muted text-sm font-medium">Total Borrowed</p>
                   <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
@@ -191,10 +192,10 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <p className="text-3xl font-bold text-danger">
-                  {formatCurrency(debtStats.totalBorrowed)}
+                  <CountUp value={debtStats.totalBorrowed} />
                 </p>
-              </div>
-            </div>
+              </motion.div></StaggerItem>
+            </StaggerChildren>
 
             {/* Budget Alert */}
             {budgetData && budgetData.budget > 0 && (
@@ -263,9 +264,12 @@ export default function DashboardPage() {
                 </p>
               ) : (
                 <div className="space-y-3">
-                  {recentTransactions.map((transaction) => (
-                    <div
+                  {recentTransactions.map((transaction, i) => (
+                    <motion.div
                       key={transaction._id}
+                      initial={{ opacity: 0, x: -15 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: i * 0.06 }}
                       className="flex items-center justify-between p-3 rounded-xl hover:bg-secondary transition-colors"
                     >
                       <div className="flex items-center gap-3">
@@ -306,7 +310,7 @@ export default function DashboardPage() {
                         {transaction.type === "income" ? "+" : "-"}
                         {formatCurrency(transaction.amount)}
                       </p>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               )}

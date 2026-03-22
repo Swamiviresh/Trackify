@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import { motion, AnimatePresence, ExpandCollapse, StaggerChildren, StaggerItem, CountUp } from "@/components/motion";
 
 interface Debt {
   _id: string;
@@ -172,8 +173,8 @@ export default function FriendsPage() {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="card">
+        <StaggerChildren className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <StaggerItem><motion.div whileHover={{ y: -4, boxShadow: "0 12px 40px rgba(0,0,0,0.12)" }} transition={{ duration: 0.2 }} className="card">
             <div className="flex items-center justify-between mb-2">
               <p className="text-muted text-sm font-medium">
                 Total Lent (Pending)
@@ -195,11 +196,11 @@ export default function FriendsPage() {
               </div>
             </div>
             <p className="text-3xl font-bold text-accent">
-              {formatCurrency(totalLent)}
+              <CountUp value={totalLent} />
             </p>
-          </div>
+          </motion.div></StaggerItem>
 
-          <div className="card">
+          <StaggerItem><motion.div whileHover={{ y: -4, boxShadow: "0 12px 40px rgba(0,0,0,0.12)" }} transition={{ duration: 0.2 }} className="card">
             <div className="flex items-center justify-between mb-2">
               <p className="text-muted text-sm font-medium">
                 Total Borrowed (Pending)
@@ -221,14 +222,14 @@ export default function FriendsPage() {
               </div>
             </div>
             <p className="text-3xl font-bold text-danger">
-              {formatCurrency(totalBorrowed)}
+              <CountUp value={totalBorrowed} />
             </p>
-          </div>
-        </div>
+          </motion.div></StaggerItem>
+        </StaggerChildren>
 
         {/* Add Form */}
-        {showForm && (
-          <div className="card">
+        <ExpandCollapse isOpen={showForm}>
+          <div className="card mt-6">
             <h2 className="text-lg font-semibold text-foreground mb-4">
               Add New Record
             </h2>
@@ -342,7 +343,7 @@ export default function FriendsPage() {
               </div>
             </form>
           </div>
-        )}
+        </ExpandCollapse>
 
         {/* Filters */}
         <div className="flex flex-wrap gap-4">
@@ -401,9 +402,12 @@ export default function FriendsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {debts.map((debt) => (
-                    <tr
+                  {debts.map((debt, i) => (
+                    <motion.tr
                       key={debt._id}
+                      initial={{ opacity: 0, x: -15 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: i * 0.04 }}
                       className="border-b border-card-border last:border-0 hover:bg-secondary/30 transition-colors"
                     >
                       <td className="p-4 text-sm font-medium">
@@ -490,7 +494,7 @@ export default function FriendsPage() {
                           </button>
                         </div>
                       </td>
-                    </tr>
+                    </motion.tr>
                   ))}
                 </tbody>
               </table>

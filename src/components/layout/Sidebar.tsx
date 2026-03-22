@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
   {
@@ -75,12 +76,18 @@ export default function Sidebar() {
       </button>
 
       {/* Overlay */}
-      {mobileOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+            onClick={() => setMobileOpen(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Sidebar */}
       <aside
@@ -98,18 +105,24 @@ export default function Sidebar() {
         </div>
 
         <nav className="flex-1 px-4 space-y-1">
-          {navItems.map((item) => {
+          {navItems.map((item, i) => {
             const isActive = pathname === item.href;
             return (
-              <Link
+              <motion.div
                 key={item.href}
-                href={item.href}
-                className={isActive ? "sidebar-link-active" : "sidebar-link"}
-                onClick={() => setMobileOpen(false)}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: i * 0.05 }}
               >
-                {item.icon}
-                {item.name}
-              </Link>
+                <Link
+                  href={item.href}
+                  className={isActive ? "sidebar-link-active" : "sidebar-link"}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {item.icon}
+                  {item.name}
+                </Link>
+              </motion.div>
             );
           })}
         </nav>
