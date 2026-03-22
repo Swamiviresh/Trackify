@@ -1,4 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { ScrollReveal, AnimatedCard } from "@/components/motion";
+
+const heroWords = ["Track", "Your", "Expenses"];
 
 const features = [
   {
@@ -67,7 +73,12 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Navbar */}
-      <nav className="border-b border-card-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
+      <motion.nav
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="border-b border-card-border bg-card/80 backdrop-blur-sm sticky top-0 z-50"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
@@ -83,42 +94,80 @@ export default function LandingPage() {
               >
                 Login
               </Link>
-              <Link href="/signup" className="btn-primary text-sm !py-2 !px-4">
-                Get Started
-              </Link>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+                <Link href="/signup" className="btn-primary text-sm !py-2 !px-4">
+                  Get Started
+                </Link>
+              </motion.div>
             </div>
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 relative">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6"
+            >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
               Smart Financial Tracking
-            </div>
+            </motion.div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight mb-6">
-              Track Your Expenses{" "}
-              <span className="text-primary">Smarter</span>
+              {heroWords.map((word, i) => (
+                <motion.span
+                  key={word}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 + i * 0.12 }}
+                  className="inline-block mr-[0.3em]"
+                >
+                  {word}
+                </motion.span>
+              ))}
+              <motion.span
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.56 }}
+                className="text-primary inline-block"
+              >
+                Smarter
+              </motion.span>
             </h1>
-            <p className="text-lg md:text-xl text-muted max-w-2xl mx-auto mb-10">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.7 }}
+              className="text-lg md:text-xl text-muted max-w-2xl mx-auto mb-10"
+            >
               Take control of your finances with powerful analytics, budget
               tracking, and beautiful visualizations. Your complete financial
               dashboard in one place.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/signup" className="btn-primary text-lg !py-4 !px-8">
-                Get Started Free
-              </Link>
-              <Link href="/login" className="btn-secondary text-lg !py-4 !px-8">
-                Login to Dashboard
-              </Link>
-            </div>
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.85 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            >
+              <motion.div whileHover={{ scale: 1.05, boxShadow: "0 8px 30px rgba(99,102,241,0.35)" }} whileTap={{ scale: 0.97 }}>
+                <Link href="/signup" className="btn-primary text-lg !py-4 !px-8">
+                  Get Started Free
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+                <Link href="/login" className="btn-secondary text-lg !py-4 !px-8">
+                  Login to Dashboard
+                </Link>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -126,6 +175,7 @@ export default function LandingPage() {
       {/* Features Section */}
       <section className="py-20 md:py-28 bg-secondary/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal>
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Everything you need to manage your finances
@@ -135,17 +185,20 @@ export default function LandingPage() {
               spending habits.
             </p>
           </div>
+          </ScrollReveal>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature) => (
-              <div key={feature.title} className="card group">
-                <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors duration-200">
-                  {feature.icon}
-                </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-muted">{feature.description}</p>
-              </div>
+            {features.map((feature, i) => (
+              <ScrollReveal key={feature.title} delay={i * 0.08}>
+                <AnimatedCard className="card group h-full">
+                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors duration-200">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted">{feature.description}</p>
+                </AnimatedCard>
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -153,6 +206,7 @@ export default function LandingPage() {
 
       {/* CTA Section */}
       <section className="py-20 md:py-28">
+        <ScrollReveal>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             Ready to take control of your finances?
@@ -161,14 +215,23 @@ export default function LandingPage() {
             Join thousands of users who are already tracking their expenses smarter
             with Trackify.
           </p>
-          <Link href="/signup" className="btn-primary text-lg !py-4 !px-8">
-            Start Tracking Now
-          </Link>
+          <motion.div whileHover={{ scale: 1.05, boxShadow: "0 8px 30px rgba(99,102,241,0.35)" }} whileTap={{ scale: 0.97 }} className="inline-block">
+            <Link href="/signup" className="btn-primary text-lg !py-4 !px-8">
+              Start Tracking Now
+            </Link>
+          </motion.div>
         </div>
+        </ScrollReveal>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-card-border bg-card py-12">
+      <motion.footer
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="border-t border-card-border bg-card py-12"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
@@ -187,7 +250,7 @@ export default function LandingPage() {
             </p>
           </div>
         </div>
-      </footer>
+      </motion.footer>
     </div>
   );
 }

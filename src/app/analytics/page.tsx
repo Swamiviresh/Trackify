@@ -6,6 +6,7 @@ import ExpensePieChart from "@/components/charts/ExpensePieChart";
 import MonthlyLineChart from "@/components/charts/MonthlyLineChart";
 import IncomeExpenseBarChart from "@/components/charts/IncomeExpenseBarChart";
 import LentBorrowedPieChart from "@/components/charts/LentBorrowedPieChart";
+import { FadeIn, StaggerChildren, StaggerItem } from "@/components/motion";
 import type { CategoryData, MonthlyData } from "@/types";
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -128,46 +129,54 @@ export default function AnalyticsPage() {
         {loading ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="card animate-pulse">
+              <div key={i} className="card shimmer-loader">
                 <div className="h-4 bg-secondary rounded w-1/3 mb-4" />
                 <div className="h-64 bg-secondary rounded" />
               </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <StaggerChildren className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Pie Chart */}
-            <div className="card">
-              <h2 className="text-lg font-semibold text-foreground mb-4">
-                Expenses by Category
-              </h2>
-              <ExpensePieChart data={categoryData} />
-            </div>
+            <StaggerItem>
+              <FadeIn className="card h-full">
+                <h2 className="text-lg font-semibold text-foreground mb-4">
+                  Expenses by Category
+                </h2>
+                <ExpensePieChart data={categoryData} />
+              </FadeIn>
+            </StaggerItem>
 
             {/* Bar Chart */}
-            <div className="card">
-              <h2 className="text-lg font-semibold text-foreground mb-4">
-                Income vs Expenses
-              </h2>
-              <IncomeExpenseBarChart data={monthlyData} />
-            </div>
+            <StaggerItem>
+              <FadeIn className="card h-full" delay={0.1}>
+                <h2 className="text-lg font-semibold text-foreground mb-4">
+                  Income vs Expenses
+                </h2>
+                <IncomeExpenseBarChart data={monthlyData} />
+              </FadeIn>
+            </StaggerItem>
 
             {/* Lent vs Borrowed Pie Chart */}
-            <div className="card">
-              <h2 className="text-lg font-semibold text-foreground mb-4">
-                Lent vs Borrowed
-              </h2>
-              <LentBorrowedPieChart lent={debtTotals.lent} borrowed={debtTotals.borrowed} />
-            </div>
+            <StaggerItem>
+              <FadeIn className="card h-full" delay={0.2}>
+                <h2 className="text-lg font-semibold text-foreground mb-4">
+                  Lent vs Borrowed
+                </h2>
+                <LentBorrowedPieChart lent={debtTotals.lent} borrowed={debtTotals.borrowed} />
+              </FadeIn>
+            </StaggerItem>
 
             {/* Line Chart - full width */}
-            <div className="card lg:col-span-2">
-              <h2 className="text-lg font-semibold text-foreground mb-4">
-                Monthly Spending Trend
-              </h2>
-              <MonthlyLineChart data={monthlyData} />
-            </div>
-          </div>
+            <StaggerItem className="lg:col-span-2">
+              <FadeIn className="card" delay={0.3}>
+                <h2 className="text-lg font-semibold text-foreground mb-4">
+                  Monthly Spending Trend
+                </h2>
+                <MonthlyLineChart data={monthlyData} />
+              </FadeIn>
+            </StaggerItem>
+          </StaggerChildren>
         )}
       </div>
     </DashboardLayout>

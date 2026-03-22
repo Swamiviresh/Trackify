@@ -1,10 +1,11 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import Sidebar from "./Sidebar";
 import ThemeToggle from "../ui/ThemeToggle";
+import { PageTransition } from "@/components/motion";
 
 export default function DashboardLayout({
   children,
@@ -13,6 +14,7 @@ export default function DashboardLayout({
 }) {
   const { status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -42,7 +44,9 @@ export default function DashboardLayout({
         <div className="flex justify-end p-4">
           <ThemeToggle />
         </div>
-        <div className="p-4 lg:p-8 pt-0">{children}</div>
+        <div className="p-4 lg:p-8 pt-0">
+          <PageTransition key={pathname}>{children}</PageTransition>
+        </div>
       </main>
     </div>
   );

@@ -3,6 +3,7 @@
 import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState, useCallback } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import { FadeIn, StaggerChildren, StaggerItem } from "@/components/motion";
 
 export default function SettingsPage() {
   const { data: session } = useSession();
@@ -155,7 +156,7 @@ export default function SettingsPage() {
         {loading ? (
           <div className="space-y-6">
             {[1, 2].map((i) => (
-              <div key={i} className="card animate-pulse">
+              <div key={i} className="card shimmer-loader">
                 <div className="h-4 bg-secondary rounded w-1/3 mb-6" />
                 <div className="space-y-4">
                   <div className="h-10 bg-secondary rounded" />
@@ -167,7 +168,7 @@ export default function SettingsPage() {
         ) : (
           <>
             {/* Profile Settings */}
-            <div className="card">
+            <FadeIn delay={0}><div className="card">
               <h2 className="text-lg font-semibold text-foreground mb-6">
                 Profile Information
               </h2>
@@ -233,10 +234,10 @@ export default function SettingsPage() {
                   {profileLoading ? "Saving..." : "Save Changes"}
                 </button>
               </form>
-            </div>
+            </div></FadeIn>
 
             {/* Change Password */}
-            <div className="card">
+            <FadeIn delay={0.1}><div className="card">
               <h2 className="text-lg font-semibold text-foreground mb-6">
                 Change Password
               </h2>
@@ -297,10 +298,10 @@ export default function SettingsPage() {
                   {passwordLoading ? "Changing..." : "Change Password"}
                 </button>
               </form>
-            </div>
+            </div></FadeIn>
 
             {/* Account Info */}
-            <div className="card">
+            <FadeIn delay={0.2}><div className="card">
               <h2 className="text-lg font-semibold text-foreground mb-4">
                 Account
               </h2>
@@ -320,7 +321,7 @@ export default function SettingsPage() {
               >
                 Sign Out
               </button>
-            </div>
+            </div></FadeIn>
           </>
         )}
       </div>
