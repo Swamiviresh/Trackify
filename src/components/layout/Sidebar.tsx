@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Logo from "@/components/Logo";
 
 const navItems = [
   {
@@ -96,12 +97,7 @@ export default function Sidebar() {
         } lg:translate-x-0`}
       >
         <div className="p-6">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">T</span>
-            </div>
-            <span className="text-xl font-bold text-foreground">Trackify</span>
-          </Link>
+          <Logo size="md" href="/dashboard" />
         </div>
 
         <nav className="flex-1 px-4 space-y-1">
@@ -114,14 +110,21 @@ export default function Sidebar() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: i * 0.05 }}
               >
-                <Link
-                  href={item.href}
-                  className={isActive ? "sidebar-link-active" : "sidebar-link"}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {item.icon}
-                  {item.name}
-                </Link>
+                  <Link
+                    href={item.href}
+                    className={isActive ? "sidebar-link-active" : "sidebar-link"}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="sidebar-active-indicator"
+                        className="absolute left-0 w-1 h-8 bg-primary rounded-r-full"
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                    )}
+                    {item.icon}
+                    {item.name}
+                  </Link>
               </motion.div>
             );
           })}
