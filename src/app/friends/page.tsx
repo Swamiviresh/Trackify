@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { motion, AnimatePresence, ExpandCollapse, StaggerChildren, StaggerItem, CountUp } from "@/components/motion";
+import { useToast } from "@/components/ui/Toast";
 
 interface Debt {
   _id: string;
@@ -15,6 +16,7 @@ interface Debt {
 }
 
 export default function FriendsPage() {
+  const { showToast } = useToast();
   const [debts, setDebts] = useState<Debt[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -99,6 +101,7 @@ export default function FriendsPage() {
 
       resetForm();
       fetchDebts();
+      showToast("Record added successfully", "success");
     } catch {
       setFormError("Something went wrong. Please try again.");
     } finally {
@@ -115,9 +118,11 @@ export default function FriendsPage() {
       });
       if (res.ok) {
         fetchDebts();
+        showToast("Marked as settled", "success");
       }
     } catch (error) {
       console.error("Failed to settle debt:", error);
+      showToast("Failed to settle debt", "error");
     }
   };
 
@@ -128,9 +133,11 @@ export default function FriendsPage() {
       const res = await fetch(`/api/debts/${id}`, { method: "DELETE" });
       if (res.ok) {
         fetchDebts();
+        showToast("Record deleted", "success");
       }
     } catch (error) {
       console.error("Failed to delete debt:", error);
+      showToast("Failed to delete record", "error");
     }
   };
 
@@ -371,7 +378,17 @@ export default function FriendsPage() {
         {/* Debts Table */}
         <div className="card overflow-hidden !p-0">
           {loading ? (
-            <div className="p-8 text-center text-muted">Loading...</div>
+            <div className="p-6 space-y-3">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="shimmer-loader flex items-center gap-4 p-3 rounded-xl">
+                  <div className="h-4 bg-secondary rounded w-28" />
+                  <div className="h-4 bg-secondary rounded w-20 ml-auto" />
+                  <div className="h-6 bg-secondary rounded-full w-16" />
+                  <div className="h-6 bg-secondary rounded-full w-16" />
+                  <div className="h-4 bg-secondary rounded w-20" />
+                </div>
+              ))}
+            </div>
           ) : debts.length === 0 ? (
             <div className="p-8 text-center text-muted">
               No records found. Add your first one!

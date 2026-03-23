@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { motion, ExpandCollapse } from "@/components/motion";
+import { useToast } from "@/components/ui/Toast";
 
 const CATEGORIES = [
   "Food & Dining",
@@ -30,6 +31,7 @@ interface Transaction {
 }
 
 export default function TransactionsPage() {
+  const { showToast } = useToast();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -116,6 +118,10 @@ export default function TransactionsPage() {
 
       resetForm();
       fetchTransactions();
+      showToast(
+        editingId ? "Transaction updated successfully" : "Transaction added successfully",
+        "success"
+      );
     } catch {
       setFormError("Something went wrong. Please try again.");
     } finally {
@@ -142,9 +148,11 @@ export default function TransactionsPage() {
       const res = await fetch(`/api/transactions/${id}`, { method: "DELETE" });
       if (res.ok) {
         fetchTransactions();
+        showToast("Transaction deleted", "success");
       }
     } catch (error) {
       console.error("Failed to delete transaction:", error);
+      showToast("Failed to delete transaction", "error");
     }
   };
 
@@ -360,7 +368,17 @@ export default function TransactionsPage() {
         {/* Transactions Table */}
         <div className="card overflow-hidden !p-0">
           {loading ? (
-            <div className="p-8 text-center text-muted">Loading...</div>
+            <div className="p-6 space-y-3">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="shimmer-loader flex items-center gap-4 p-3 rounded-xl">
+                  <div className="h-4 bg-secondary rounded w-20" />
+                  <div className="h-4 bg-secondary rounded w-32 flex-1" />
+                  <div className="h-6 bg-secondary rounded-full w-20" />
+                  <div className="h-6 bg-secondary rounded-full w-16" />
+                  <div className="h-4 bg-secondary rounded w-20 ml-auto" />
+                </div>
+              ))}
+            </div>
           ) : transactions.length === 0 ? (
             <div className="p-8 text-center text-muted">
               No transactions found. Add your first one!

@@ -67,11 +67,11 @@
   }
 
   .sidebar-link {
-    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-muted hover:text-foreground hover:bg-sidebar-active transition-all duration-200 font-medium;
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-muted hover:text-foreground hover:bg-sidebar-active transition-all duration-200 font-medium relative;
   }
 
   .sidebar-link-active {
-    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-primary bg-sidebar-active font-semibold;
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-primary bg-sidebar-active font-semibold relative;
   }
 
   .shimmer-loader {
@@ -121,4 +121,53 @@
 /* Input focus glow */
 .input-field:focus {
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* Safe area for mobile bottom nav */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Gradient text utility */
+.text-gradient {
+  background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Improved card hover for touch devices */
+@media (hover: none) {
+  .card {
+    @apply hover:shadow-sm;
+  }
+}
+
+/* Better select styling for dark mode */
+select.input-field {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  appearance: none;
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-card-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
 }

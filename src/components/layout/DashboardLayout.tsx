@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import Sidebar from "./Sidebar";
+import BottomNav from "./BottomNav";
 import ThemeToggle from "../ui/ThemeToggle";
 import { PageTransition } from "@/components/motion";
 
@@ -40,7 +41,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
-      <main className="lg:ml-64 min-h-screen">
+      <main className="lg:ml-64 min-h-screen pb-20 lg:pb-0">
         <div className="flex justify-end p-4">
           <ThemeToggle />
         </div>
@@ -48,6 +49,7 @@ export default function DashboardLayout({
           <PageTransition key={pathname}>{children}</PageTransition>
         </div>
       </main>
+      <BottomNav />
     </div>
   );
 }

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import Logo from "@/components/Logo";
+import { motion } from "framer-motion";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -73,22 +75,29 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold">T</span>
-            </div>
-            <span className="text-2xl font-bold text-foreground">Trackify</span>
-          </Link>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-8"
+        >
+          <div className="mb-6 flex justify-center">
+            <Logo size="lg" href="/" />
+          </div>
           <h1 className="text-2xl font-bold text-foreground">
             Create your account
           </h1>
           <p className="text-muted mt-2">
             Start tracking your expenses today
           </p>
-        </div>
+        </motion.div>
 
-        <div className="card">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="card"
+        >
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
               <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm">
@@ -190,7 +199,7 @@ export default function SignupPage() {
               Sign in
             </Link>
           </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
